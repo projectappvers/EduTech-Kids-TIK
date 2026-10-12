@@ -1,0 +1,394 @@
+const EDU_TECH_GAS_CONFIG = {
+    webAppUrl: 'https://script.google.com/macros/s/AKfycbxPUCULAM6sz67CC6W4ZTMIHG6_e-Ppjbc2uFEjyc11ursgunKYxiFgAJWeMn0ejKyoXA/exec',
+    pollIntervalMs: 1000,
+    requestTimeoutMs: 8000
+};
+(function () {
+    'use strict';
+    const DATA_PREFIX = 'eduTech_';
+    const originalSetItem = Storage.prototype.setItem;
+    const originalRemoveItem = Storage.prototype.removeItem;
+    const originalGetItem = Storage.prototype.getItem;
+    const clientId = getClientId();
+    const pendingWrites = new Map();
+    const writeTimers = new Map();
+    const retryTimers = new Map();
+    const latestClientSeq = new Map();
+    const knownVersions = new Map();
+    let initialized = false;
+    let applyingRemote = false;
+    let lastRevision = 0;
+    let polling = false;
+    let syncStarted = false;
+    let originalWindowOnload = window.onload;
+    function getClientId() {
+        // ID baru untuk setiap pemuatan halaman. Jangan pakai ID sessionStorage:
+        // clientSeq dimulai ulang setiap reload dan GAS akan menganggap write berikutnya duplikat.
+        return 'client-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+    }
+    function isConfigured() {
+        return EDU_TECH_GAS_CONFIG.webAppUrl.startsWith('https://script.google.com/macros/s/') &&
+            !EDU_TECH_GAS_CONFIG.webAppUrl.includes('TEMPEL_');
+    }
+    function getLocalDataKeys() {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith(DATA_PREFIX)) keys.push(key);
+        }
+        return keys;
+    }
+    function jsonpRequest(sinceRevision) {
+        return new Promise((resolve, reject) => {
+            const callbackName = '__eduTechGasSyncCallback';
+            const script = document.createElement('script');
+            let finished = false;
+            const timeout = setTimeout(() => finish(new Error('Timeout menunggu Google Apps Script.')), EDU_TECH_GAS_CONFIG.requestTimeoutMs);
+            function cleanup() {
+                clearTimeout(timeout);
+                script.remove();
+                try { delete window[callbackName]; } catch (_) { window[callbackName] = undefined; }
+            }
+            function finish(error, result) {
+                if (finished) return;
+                finished = true;
+                cleanup();
+                if (error) reject(error);
+                else resolve(result);
+            }
+            window[callbackName] = result => finish(null, result);
+            script.onerror = () => finish(new Error('Tidak dapat mengakses URL Web App GAS.'));
+            const url = new URL(EDU_TECH_GAS_CONFIG.webAppUrl);
+            url.searchParams.set('action', 'sync');
+            url.searchParams.set('since', String(sinceRevision));
+            url.searchParams.set('callback', callbackName);
+            url.searchParams.set('_', String(Date.now()));
+            script.src = url.toString();
+            document.head.appendChild(script);
+        });
+    }
+    function scheduleWriteRetry(key, write, delay = 5000) {
+        if (retryTimers.has(key)) clearTimeout(retryTimers.get(key));
+        retryTimers.set(key, setTimeout(() => {
+            retryTimers.delete(key);
+            if (pendingWrites.get(key) !== write || write.acknowledged) return;
+            if (write.attempts >= 8) {
+                console.error('[EduTech GAS] Perubahan belum terkonfirmasi setelah beberapa percobaan:', key);
+                return;
+            }
+            postWrite(key, write);
+        }, delay));
+    }
+    async function postWrite(key, write) {
+        if (pendingWrites.get(key) !== write || write.acknowledged) return;
+        write.attempts = (write.attempts || 0) + 1;
+        const body = {
+            action: 'write',
+            key,
+            value: write.value,
+            deleted: write.deleted,
+            clientId,
+            clientSeq: write.seq
+        };
+        try {
+            await fetch(EDU_TECH_GAS_CONFIG.webAppUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-store',
+                headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                body: JSON.stringify(body)
+            });
+            // no-cors memberi opaque response. Keberhasilan baru dipastikan saat record
+            // dengan clientId/clientSeq yang sama kembali melalui polling JSONP.
+            write.sent = true;
+            scheduleWriteRetry(key, write, 5000);
+        } catch (error) {
+            write.sent = false;
+            console.error('[EduTech GAS] Gagal mengirim perubahan:', key, error);
+            scheduleWriteRetry(key, write, 3000);
+        }
+    }
+    function scheduleWrite(key, value, deleted) {
+        if (!initialized || applyingRemote || !key.startsWith(DATA_PREFIX)) return;
+        const seq = (latestClientSeq.get(key) || 0) + 1;
+        latestClientSeq.set(key, seq);
+        const write = { value: value == null ? '' : String(value), deleted: Boolean(deleted), seq, sent: false, attempts: 0, acknowledged: false };
+        pendingWrites.set(key, write);
+        if (writeTimers.has(key)) clearTimeout(writeTimers.get(key));
+        writeTimers.set(key, setTimeout(() => {
+            writeTimers.delete(key);
+            const latest = pendingWrites.get(key);
+            if (latest) postWrite(key, latest);
+        }, 250));
+    }
+    Storage.prototype.setItem = function (key, value) {
+        originalSetItem.call(this, key, value);
+        if (this === window.localStorage && typeof key === 'string') {
+            scheduleWrite(key, String(value), false);
+        }
+    };
+    Storage.prototype.removeItem = function (key) {
+        originalRemoveItem.call(this, key);
+        if (this === window.localStorage && typeof key === 'string') {
+            scheduleWrite(key, '', true);
+        }
+    };
+    function clearPendingTimers(key) {
+        if (writeTimers.has(key)) {
+            clearTimeout(writeTimers.get(key));
+            writeTimers.delete(key);
+        }
+        if (retryTimers.has(key)) {
+            clearTimeout(retryTimers.get(key));
+            retryTimers.delete(key);
+        }
+    }
+    function replacePendingWrite(key, value, deleted = false) {
+        // Batalkan percobaan lama sebelum membuat snapshot gabungan yang lebih baru.
+        // clientSeq baru membuat backend menolak kiriman lama dari klien yang sama.
+        clearPendingTimers(key);
+        const seq = (latestClientSeq.get(key) || 0) + 1;
+        latestClientSeq.set(key, seq);
+        const write = {
+            value: value == null ? '' : String(value),
+            deleted: Boolean(deleted),
+            seq,
+            sent: false,
+            attempts: 0,
+            acknowledged: false
+        };
+        pendingWrites.set(key, write);
+        if (initialized) {
+            writeTimers.set(key, setTimeout(() => {
+                writeTimers.delete(key);
+                if (pendingWrites.get(key) === write) postWrite(key, write);
+            }, 250));
+        }
+        return write;
+    }
+    function applyRemoteRecord(record, changedKeys) {
+        if (!record || !record.key || !record.key.startsWith(DATA_PREFIX)) return;
+
+        const key = record.key;
+        const revision = Number(record.revision) || 0;
+        const previousRevision = knownVersions.get(key) || 0;
+        const pending = pendingWrites.get(key);
+
+        // Akui kiriman milik perangkat ini meskipun revisi tersebut sudah pernah dibaca.
+        if (pending && record.clientId === clientId && Number(record.clientSeq) >= pending.seq) {
+            pending.acknowledged = true;
+            pendingWrites.delete(key);
+            clearPendingTimers(key);
+        }
+        if (revision <= previousRevision) return;
+
+        // Daftar akun adalah satu array utuh. Jangan buang snapshot akun dari perangkat lain
+        // hanya karena ada penulisan lokal yang tertunda: gabungkan akun dari kedua sisi.
+        if (key === 'eduTech_users_v8' && !record.deleted) {
+            const localValue = originalGetItem.call(localStorage, key) || '[]';
+            const remoteValue = String(record.value ?? '[]');
+            const mergedValue = mergeUserRecords(localValue, remoteValue);
+
+            if (mergedValue !== localValue) {
+                applyingRemote = true;
+                try { originalSetItem.call(localStorage, key, mergedValue); }
+                finally { applyingRemote = false; }
+                changedKeys.add(key);
+            }
+            knownVersions.set(key, revision);
+
+            // Bila ada akun lokal yang belum ikut tersimpan di server, kirim ulang daftar
+            // gabungan. Kalau data server sudah memuat semuanya, hapus penulisan tertunda
+            // yang kini sudah tercakup agar tidak mengirim snapshot usang.
+            if (mergedValue !== remoteValue) {
+                const currentPending = pendingWrites.get(key);
+                if (!currentPending || currentPending.value !== mergedValue || currentPending.deleted) {
+                    replacePendingWrite(key, mergedValue, false);
+                }
+            } else {
+                const currentPending = pendingWrites.get(key);
+                if (currentPending) {
+                    pendingWrites.delete(key);
+                    clearPendingTimers(key);
+                }
+            }
+            return;
+        }
+
+        // Untuk kunci selain akun, pertahankan kebijakan lama untuk menghindari menimpa
+        // perubahan lokal yang masih menunggu konfirmasi.
+        const currentPending = pendingWrites.get(key);
+        if (currentPending) return;
+
+        applyingRemote = true;
+        try {
+            if (record.deleted) {
+                if (originalGetItem.call(localStorage, key) !== null) {
+                    originalRemoveItem.call(localStorage, key);
+                    changedKeys.add(key);
+                }
+            } else if (originalGetItem.call(localStorage, key) !== String(record.value ?? '')) {
+                originalSetItem.call(localStorage, key, String(record.value ?? ''));
+                changedKeys.add(key);
+            }
+        } finally {
+            applyingRemote = false;
+        }
+        knownVersions.set(key, revision);
+    }
+    function mergeUserRecords(localValue, remoteValue) {
+        let localUsers = [], remoteUsers = [];
+        try { localUsers = JSON.parse(localValue || '[]'); } catch (_) {}
+        try { remoteUsers = JSON.parse(remoteValue || '[]'); } catch (_) {}
+        if (!Array.isArray(localUsers)) localUsers = [];
+        if (!Array.isArray(remoteUsers)) remoteUsers = [];
+        const merged = new Map();
+        remoteUsers.forEach(user => { if (user && user.username) merged.set(String(user.username).toLowerCase(), user); });
+        localUsers.forEach(user => { if (user && user.username) merged.set(String(user.username).toLowerCase(), user); });
+        return JSON.stringify(Array.from(merged.values()));
+    }
+    async function initializeFromSheet() {
+        const localUsersBeforeSync = originalGetItem.call(localStorage, 'eduTech_users_v8');
+        const response = await jsonpRequest(0);
+        if (!response || !response.ok) throw new Error(response && response.error ? response.error : 'Respons GAS tidak valid.');
+        lastRevision = Number(response.revision) || 0;
+        const records = Array.isArray(response.records) ? response.records : [];
+        const remoteKeys = new Set(records.map(record => record.key));
+        const changedKeys = new Set();
+        records.forEach(record => {
+            if (record.key === 'eduTech_users_v8' && !record.deleted && localUsersBeforeSync !== null) {
+                const mergedValue = mergeUserRecords(localUsersBeforeSync, record.value);
+                const remoteValue = String(record.value ?? '');
+                if (mergedValue !== remoteValue) {
+                    applyingRemote = true;
+                    try { originalSetItem.call(localStorage, record.key, mergedValue); }
+                    finally { applyingRemote = false; }
+                    changedKeys.add(record.key);
+                    knownVersions.set(record.key, Number(record.revision) || 0);
+                    pendingWrites.set(record.key, { value: mergedValue, deleted: false, seq: (latestClientSeq.get(record.key) || 0) + 1, sent: false, attempts: 0, acknowledged: false });
+                    latestClientSeq.set(record.key, (latestClientSeq.get(record.key) || 0) + 1);
+                } else {
+                    applyRemoteRecord(record, changedKeys);
+                }
+            } else {
+                applyRemoteRecord(record, changedKeys);
+            }
+        });
+        initialized = true;
+        const mergedUsersWrite = pendingWrites.get('eduTech_users_v8');
+        if (mergedUsersWrite) postWrite('eduTech_users_v8', mergedUsersWrite);
+        getLocalDataKeys().forEach(key => {
+            if (!remoteKeys.has(key)) {
+                const value = originalGetItem.call(localStorage, key);
+                if (value !== null) scheduleWrite(key, value, false);
+            }
+        });
+        if (changedKeys.size) refreshAppAfterRemoteChange(changedKeys);
+        console.info('[EduTech GAS] Sinkronisasi aktif. Versi data:', lastRevision);
+    }
+    async function pollSheet() {
+        if (!initialized || polling || !isConfigured()) return;
+        polling = true;
+        try {
+            const response = await jsonpRequest(lastRevision);
+            if (!response || !response.ok) throw new Error(response && response.error ? response.error : 'Respons GAS tidak valid.');
+            const changedKeys = new Set();
+            (Array.isArray(response.records) ? response.records : []).forEach(record => {
+                applyRemoteRecord(record, changedKeys);
+                lastRevision = Math.max(lastRevision, Number(record.revision) || 0);
+            });
+            lastRevision = Math.max(lastRevision, Number(response.revision) || 0);
+            if (changedKeys.size) refreshAppAfterRemoteChange(changedKeys);
+        } catch (error) {
+            console.warn('[EduTech GAS] Sinkronisasi tertunda:', error.message || error);
+        } finally {
+            polling = false;
+        }
+    }
+    function refreshAppAfterRemoteChange(changedKeys) {
+        const contentChanged = changedKeys.has('eduTech_modules_v8') || changedKeys.has('eduTech_quizzes_v8');
+        if (typeof currentUser !== 'undefined' && currentUser) {
+            try {
+                if (currentUser.role === 'siswa') {
+                    const section = typeof activeStudentSection !== 'undefined' ? activeStudentSection : 'dashboard';
+                    if (section === 'modules' && typeof renderStudentModules === 'function') renderStudentModules();
+                    else if (section === 'quizzes') {
+                        if (typeof renderStudentQuizzes === 'function') renderStudentQuizzes();
+                        if (typeof renderStudentQuizHistory === 'function') renderStudentQuizHistory();
+                    } else if (section === 'dashboard') {
+                        if (typeof updateStudentReadProgress === 'function') updateStudentReadProgress();
+                        if (typeof updateStudentQuizProgress === 'function') updateStudentQuizProgress();
+                    }
+                } else if (currentUser.role === 'guru') {
+                    const section = typeof activeTeacherSection !== 'undefined' ? activeTeacherSection : 'dashboard';
+                    if (section === 'students' && typeof renderTeacherStudentList === 'function') renderTeacherStudentList();
+                    else if (section === 'modules' && typeof renderTeacherModules === 'function') renderTeacherModules();
+                    else if (section === 'attendance' && typeof loadAttendanceForm === 'function') loadAttendanceForm();
+                    else if (section === 'quizzes' && typeof renderTeacherQuizList === 'function') renderTeacherQuizList();
+                    else if (section === 'grading') {
+                        if (typeof populateTeacherQuizSelectOptions === 'function') populateTeacherQuizSelectOptions();
+                        if (typeof renderTeacherGradingTable === 'function') renderTeacherGradingTable();
+                    } else if (section === 'dashboard') {
+                        if (typeof switchTeacherSection === 'function') {
+                            const users = JSON.parse(localStorage.getItem('eduTech_users_v8') || '[]');
+                            const modules = JSON.parse(localStorage.getItem('eduTech_modules_v8') || '[]');
+                            const quizzes = JSON.parse(localStorage.getItem('eduTech_quizzes_v8') || '[]');
+                            const students = document.getElementById('statTotalStudents');
+                            const moduleCount = document.getElementById('statTotalModules');
+                            const quizCount = document.getElementById('statTotalQuizzes');
+                            if (students) students.innerText = `${users.filter(user => user.role === 'siswa').length} Siswa`;
+                            if (moduleCount) moduleCount.innerText = `${modules.length} / 32`;
+                            if (quizCount) quizCount.innerText = `${quizzes.length} Kuis`;
+                        }
+                    }
+                }
+                if (typeof updateSidebarUI === 'function') updateSidebarUI();
+            } catch (error) {
+                console.warn('[EduTech GAS] Tampilan belum dapat diperbarui:', error);
+            }
+        }
+        if (typeof renderNotifications === 'function') renderNotifications();
+    }
+    async function startSync() {
+        if (!isConfigured()) {
+            console.info('[EduTech GAS] URL Web App belum diatur. Aplikasi berjalan lokal seperti biasa.');
+            return;
+        }
+        try {
+            await initializeFromSheet();
+        } catch (error) {
+            console.warn('[EduTech GAS] Belum terhubung saat halaman dibuka:', error.message || error);
+        }
+        if (!syncStarted) {
+            syncStarted = true;
+            setInterval(() => {
+                if (!initialized) {
+                    initializeFromSheet().catch(error => console.warn('[EduTech GAS] Menunggu koneksi:', error.message || error));
+                } else {
+                    pollSheet();
+                }
+            }, EDU_TECH_GAS_CONFIG.pollIntervalMs);
+            window.addEventListener('online', () => initialized ? pollSheet() : initializeFromSheet().catch(() => {}));
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    if (initialized) pollSheet();
+                    else initializeFromSheet().catch(() => {});
+                }
+            });
+        }
+    }
+    window.EduTechGASSync = {
+        getStatus: () => ({
+            configured: isConfigured(),
+            initialized,
+            polling,
+            lastRevision,
+            pendingWrites: Array.from(pendingWrites.entries()).map(([key, write]) => ({ key, seq: write.seq, attempts: write.attempts, sent: write.sent }))
+        }),
+        syncNow: () => initialized ? pollSheet() : initializeFromSheet()
+    };
+    window.onload = async function (event) {
+        await startSync();
+        if (typeof originalWindowOnload === 'function') originalWindowOnload.call(window, event);
+    };
+})();

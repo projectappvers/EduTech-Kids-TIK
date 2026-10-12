@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTech Kids - Platform eLearning TIK SD</title>
+    <link rel="icon" type="image/png" href="asset/EduTech Kids.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="landing-page text-slate-800 font-sans min-h-screen flex flex-col relative transition-colors duration-300">
+    <div id="sidebarOverlay" onclick="closeSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-40 hidden transition-all duration-300 no-print"></div>
+    <aside id="sidebar" class="fixed top-3 left-3 bottom-3 z-50 w-72 glass-sidebar-modern rounded-[2.2rem] transform -translate-x-[110%] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-hidden no-print">
+        <div class="p-5 overflow-y-auto flex-1 space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200/80">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 border border-slate-200/80 bg-white shadow-md">
+                        <img src="asset/EduTech Kids.png" alt="EduTech Kids Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h2 class="font-display font-extrabold text-base leading-tight text-slate-900 tracking-tight">EduTech Kids</h2>
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-brand-600 bg-brand-50/80 px-2.5 py-0.5 rounded-full border border-brand-200/80 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Portal TIK
+                        </span>
+                    </div>
+                </div>
+                <button onclick="closeSidebar()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-800 transition active:scale-95">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1" id="sidebarNavTitle">Menu Navigasi</p>
+                <nav id="sidebarNavLinks" class="space-y-2"></nav>
+            </div>
+        </div>
+        <div id="sidebarAccountArea" class="p-3 m-3 sidebar-user-card-modern rounded-2xl"></div>
+    </aside>
+    <header class="bg-white/30 backdrop-blur-lg border-b border-white/50 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <button id="hamburgerMenuBtn" onclick="toggleSidebar()" class="p-2.5 bg-white/60 hover:bg-white text-slate-700 rounded-2xl transition-all duration-200 flex items-center justify-center border border-white/80 shadow-sm active:scale-95 group" title="Buka Menu Navigasi">
+                        <i class="fa-solid fa-bars-staggered text-lg group-hover:text-brand-600 transition"></i>
+                    </button>
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-md bg-white">
+                        <img src="asset/EduTech Kids.png" alt="EduTech Kids Logo" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h1 class="font-display text-xl sm:text-2xl font-bold text-brand-600 tracking-wide flex items-center gap-2">
+                            EduTech Kids <span class="bg-brand-100 text-brand-700 text-xs px-2 py-0.5 rounded-full font-sans font-semibold">eLearning TIK</span>
+                        </h1>
+                        <p class="text-xs text-slate-600 hidden sm:block font-medium">
+                            Kelas 5A-5D & 6A-6D <span class="mx-1 text-slate-300">•</span> <span class="text-brand-600 font-semibold"><i class="fa-solid fa-calendar-days mr-1"></i><span class="ta-display">T.A 2026/2027</span></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div id="notifContainer" class="relative hidden">
+                        <button onclick="toggleNotifDropdown()" class="relative p-2.5 bg-white/60 hover:bg-white text-slate-700 rounded-2xl border border-white shadow-sm transition active:scale-95 flex items-center justify-center" title="Notifikasi Pembelajaran">
+                            <i class="fa-solid fa-bell text-lg text-brand-600"></i>
+                            <span id="notifBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm hidden">0</span>
+                        </button>
+                        <div id="notifDropdown" class="absolute right-0 mt-2 w-80 sm:w-96 bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/80 p-4 z-50 hidden">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                                <h4 class="font-display font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-bell text-brand-600"></i> Notifikasi TIK
+                                </h4>
+                                <span id="notifCountTag" class="text-[10px] font-bold bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">0 Notifikasi</span>
+                            </div>
+                            <div id="notifList" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex items-center gap-2 bg-white/60 border border-white/80 px-3.5 py-1.5 rounded-2xl text-xs font-semibold text-slate-700 shadow-sm backdrop-blur-md">
+                        <i class="fa-regular fa-calendar-days text-brand-600"></i>
+                        <span id="liveDateDisplay">Rabu, 07 Oktober 2026</span>
+                        <span class="text-slate-300">•</span>
+                        <i class="fa-regular fa-clock text-brand-600"></i>
+                        <span id="liveClockDisplay" class="font-mono tabular-nums min-w-[95px] inline-block text-center">00:00:00 WIB</span>
+                    </div>
+                    <div id="navUserBar" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+        <section id="authSection" class="max-w-md mx-auto my-6 sm:my-10 glass-card rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/80">
+            <div class="flex bg-white/40 p-1.5 rounded-2xl mb-6 backdrop-blur-sm border border-white/60 shadow-inner">
+                <button id="tabBtnLogin" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all bg-white shadow-md text-brand-600">
+                    <i class="fa-solid fa-right-to-bracket mr-1"></i> Masuk
+                </button>
+                <button id="tabBtnRegister" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all text-slate-600 hover:text-slate-800">
+                    <i class="fa-solid fa-user-plus mr-1"></i> Buat Akun
+                </button>
+                <button id="tabBtnReset" onclick="switchAuthTab('reset')" class="flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all text-slate-600 hover:text-slate-800">
+                    <i class="fa-solid fa-key mr-1"></i> Lupa Pass
+                </button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div class="text-center mb-4">
+                    <h2 class="text-2xl font-display font-bold text-slate-800">Selamat Datang! 👋</h2>
+                    <p class="text-xs text-slate-600 mt-1">Masukkan username & password akun kamu</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="loginUsername" required autocomplete="off" class="w-full pl-10 pr-4 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition" placeholder="Username kamu">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="password" id="loginPassword" required autocomplete="off" class="w-full pl-10 pr-10 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeIconLogin')" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600">
+                            <i id="eyeIconLogin" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Masuk Sebagai</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label id="roleSiswaLabel" class="p-3.5 border-2 rounded-2xl cursor-pointer transition-all duration-200 bg-white/80 border-brand-500 shadow-md flex items-center justify-between relative overflow-hidden group">
+                            <input type="radio" name="loginRole" value="siswa" checked class="hidden" onchange="updateRoleSelectorUI('siswa')">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 shrink-0 shadow-sm group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-user-graduate text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800 leading-tight">Siswa</p>
+                                    <span class="text-[10px] text-slate-500 font-medium">Kelas 5 & 6</span>
+                                </div>
+                            </div>
+                            <span id="roleSiswaBadge" class="w-5 h-5 rounded-full bg-brand-600 text-white flex items-center justify-center text-[10px] shrink-0">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+                        </label>
+                        <label id="roleGuruLabel" class="p-3.5 border-2 rounded-2xl cursor-pointer transition-all duration-200 bg-white/30 border-slate-200/80 hover:bg-white/60 flex items-center justify-between relative overflow-hidden group">
+                            <input type="radio" name="loginRole" value="guru" class="hidden" onchange="updateRoleSelectorUI('guru')">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0 shadow-sm group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-chalkboard-user text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800 leading-tight">Guru TIK</p>
+                                    <span class="text-[10px] text-slate-500 font-medium">Panel Pengajar</span>
+                                </div>
+                            </div>
+                            <span id="roleGuruBadge" class="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] shrink-0 hidden">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 transition duration-200 flex items-center justify-center gap-2 mt-2 active:scale-95">
+                    <span>Masuk ke Portal TIK</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </form>
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-2xl font-display font-bold text-slate-800">Pendaftaran Akun Baru 🚀</h2>
+                    <p class="text-xs text-slate-600 mt-1">Pilih peran akun kamu di bawah ini</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Daftar Sebagai</label>
+                    <div class="grid grid-cols-2 gap-2 bg-slate-200/60 p-1 rounded-xl">
+                        <button type="button" id="regRoleBtnSiswa" onclick="setRegisterRole('siswa')" class="py-2 text-xs font-bold rounded-lg bg-white text-brand-600 shadow-sm flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-user-graduate"></i> Siswa
+                        </button>
+                        <button type="button" id="regRoleBtnGuru" onclick="setRegisterRole('guru')" class="py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-800 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-chalkboard-user"></i> Guru TIK
+                        </button>
+                    </div>
+                    <input type="hidden" id="regRole" value="siswa">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap</label>
+                    <input type="text" id="regFullName" required autocomplete="off" class="w-full px-3.5 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm" placeholder="Nama Lengkap">
+                </div>
+                <div id="regStudentFields" class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Siswa</label>
+                        <input type="text" id="regUsername" autocomplete="off" class="w-full px-3.5 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm" placeholder="username">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Kelas</label>
+                        <select id="regClass" class="w-full px-3 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm font-semibold text-brand-600">
+                            <optgroup label="Kelas 5 SD">
+                                <option value="5A">Kelas 5A</option>
+                                <option value="5B">Kelas 5B</option>
+                                <option value="5C">Kelas 5C</option>
+                                <option value="5D">Kelas 5D</option>
+                            </optgroup>
+                            <optgroup label="Kelas 6 SD">
+                                <option value="6A">Kelas 6A</option>
+                                <option value="6B">Kelas 6B</option>
+                                <option value="6C">Kelas 6C</option>
+                                <option value="6D">Kelas 6D</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div id="regTeacherFields" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Guru</label>
+                        <input type="text" id="regTeacherUsername" autocomplete="off" class="w-full px-3.5 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm" placeholder="username_guru">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">NIP / Kode Guru TIK <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                        <input type="text" id="regTeacherNip" autocomplete="off" class="w-full px-3.5 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm" placeholder="NIP (opsional)">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Baru</label>
+                    <div class="relative">
+                        <input type="password" id="regPassword" required minlength="4" autocomplete="off" class="w-full pl-3.5 pr-10 py-2.5 bg-white/70 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm" placeholder="Minimal 4 karakter">
+                        <button type="button" onclick="togglePasswordVisibility('regPassword', 'eyeIconReg')" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600">
+                            <i id="eyeIconReg" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition duration-200 active:scale-95">
+                    Daftar Akun
+                </button>
+            </form>
+            <form id="resetForm" onsubmit="handleResetPassword(event)" class="space-y-4 hidden">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-display font-bold text-slate-800">Reset Password 🔑</h2>
+                    <p class="text-xs text-slate-600 mt-1">Atur ulang kata sandi akun Siswa atau Guru TIK</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Peran Akun</label>
+                    <select id="resetRole" class="w-full px-3 py-2.5 bg-white/70 border border-slate-200 rounded-xl text-sm font-semibold">
+                        <option value="siswa">Siswa</option>
+                        <option value="guru">Guru TIK</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Akun</label>
+                    <input type="text" id="resetUsername" required autocomplete="off" class="w-full px-3.5 py-2.5 bg-white/70 border border-slate-200 rounded-xl text-sm" placeholder="Masukkan username">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Baru</label>
+                    <div class="relative">
+                        <input type="password" id="resetNewPassword" required minlength="4" autocomplete="off" class="w-full pl-3.5 pr-10 py-2.5 bg-white/70 border border-slate-200 rounded-xl text-sm" placeholder="Password baru">
+                        <button type="button" onclick="togglePasswordVisibility('resetNewPassword', 'eyeIconReset')" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600">
+                            <i id="eyeIconReset" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition active:scale-95">
+                    Simpan Password Baru
+                </button>
+            </form>
+        </section>
+        <section id="studentDashboard" class="hidden space-y-6">
+            <div id="studentSubViewDashboard" class="space-y-6">
+                <div class="relative overflow-hidden rounded-[2.5rem] glass-card-hero p-6 sm:p-8 text-slate-800 shadow-xl border border-white/90 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                    <div class="relative z-10 max-w-lg space-y-3">
+                        <div class="inline-flex items-center gap-2 bg-brand-50/90 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-brand-700 border border-brand-200/60 shadow-sm">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Siswa TIK Aktif</span>
+                            <span class="text-slate-300">•</span>
+                            <span class="text-brand-600 font-bold ta-display">T.A 2026/2027</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-display font-bold text-slate-800 tracking-wide drop-shadow-sm">
+                            Halo, <span id="studentGreetingName" class="text-brand-600">Siswa</span>! 👋
+                        </h2>
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+                            Kelas: <span id="studentGreetingClass" class="font-extrabold text-brand-600 underline decoration-brand-400 decoration-2">5A</span> | Selamat belajar & eksplorasi dunia TIK!
+                        </p>
+                    </div>
+                    <div class="relative z-10 flex flex-col sm:flex-row gap-3 min-w-[280px] w-full lg:w-auto">
+                        <div class="bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-white/80 flex-1 shadow-md min-w-[210px]">
+                            <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-book-open text-brand-600"></i> Progres Modul</span>
+                                <span id="studentProgressText" class="text-brand-600 font-extrabold text-xs">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-200/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-300/50">
+                                <div id="studentProgressBar" class="bg-gradient-to-r from-brand-500 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="studentModulesReadCount" class="text-[10px] text-slate-500 mt-1.5 text-right font-medium">0 dari 16 Modul</p>
+                        </div>
+                        <div class="bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-white/80 flex-1 shadow-md min-w-[210px]">
+                            <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-pen-to-square text-purple-600"></i> Progres Kuis</span>
+                                <span id="studentQuizProgressText" class="text-purple-600 font-extrabold text-xs">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-200/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-300/50">
+                                <div id="studentQuizProgressBar" class="bg-gradient-to-r from-purple-500 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="studentQuizzesDoneCount" class="text-[10px] text-slate-500 mt-1.5 text-right font-medium">0 dari 0 Kuis</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-xl border border-white/90">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-200/80 mb-4">
+                        <h3 class="font-display font-bold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-brand-600"></i> Biodata & Profil Siswa
+                        </h3>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Siswa Aktif</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Nama Lengkap</span>
+                            <p id="stdBioName" class="font-bold text-slate-900 text-sm truncate">-</p>
+                        </div>
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Username</span>
+                            <p id="stdBioUsername" class="font-bold text-brand-600 text-sm truncate">-</p>
+                        </div>
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Kelas TIK</span>
+                            <p id="stdBioClass" class="font-bold text-indigo-600 text-sm truncate">-</p>
+                        </div>
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Tahun Ajaran</span>
+                            <p class="font-bold text-slate-900 text-sm ta-display">T.A 2026/2027</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="glass-card p-4 sm:p-5 rounded-3xl shadow-md border border-white/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="font-display font-bold text-slate-900 text-xl flex items-center gap-2">
+                                <i class="fa-solid fa-shapes text-brand-600"></i> Menu Utama Siswa TIK
+                            </h3>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">Pilih menu di bawah ini untuk mulai belajar, mengerjakan kuis, dan panduan TIK</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div onclick="switchStudentSection('modules')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-book-open"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-brand-600 transition">Modul Pertemuan (1-16)</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Baca materi pembelajaran TIK lengkap dari pertemuan 1 sampai 16.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-brand-600 group-hover:underline">Buka Modul</span>
+                                <span class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-brand-600 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                        <div onclick="switchStudentSection('quizzes')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-purple-600 transition">Kuis & Ujian TIK</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Kerjakan kuis pilihan ganda & essay dari Guru serta lihat riwayat kuis.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-purple-600 group-hover:underline">Buka Kuis</span>
+                                <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-purple-600 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                        <div onclick="switchStudentSection('tools')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-amber-600 transition">Panduan Scratch & Canva</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Tutorial praktis pemrograman Scratch dan desain grafis Canva untuk anak.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-amber-600 group-hover:underline">Buka Panduan</span>
+                                <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-amber-500 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="studentSubViewModules" class="space-y-6 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block">
+                    <button onclick="switchStudentSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="relative overflow-hidden rounded-3xl glass-card-hero p-6 sm:p-8 shadow-xl border border-white/90 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="inline-flex items-center gap-2 bg-brand-500/10 px-3.5 py-1 rounded-full text-xs font-bold text-brand-700 border border-brand-500/20 backdrop-blur-md">
+                            <i class="fa-solid fa-graduation-cap"></i> Modul Pembelajaran Interaktif
+                        </div>
+                        <h3 class="font-display font-bold text-slate-900 text-2xl sm:text-3xl leading-snug">
+                            Daftar Modul Pertemuan Pembelajaran TIK
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-medium">
+                            Akses seluruh materi TIK terstruktur dari Pertemuan 1 hingga 16 untuk menunjang kegiatan belajar kamu
+                        </p>
+                    </div>
+                    <span id="studentModuleGradeTag" class="px-5 py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 text-white text-xs font-extrabold rounded-2xl shadow-lg shrink-0 border border-white/40">
+                        Kelas 5 SD
+                    </span>
+                </div>
+                <div id="studentModuleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            </div>
+            <div id="studentSubViewQuizzes" class="space-y-6 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block">
+                    <button onclick="switchStudentSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-sm">
+                    <h3 class="font-display font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-600"></i> Kuis TIK Aktif dari Guru
+                    </h3>
+                    <div id="studentQuizList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-sm">
+                    <h3 class="font-display font-bold text-slate-800 text-lg mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-purple-600"></i> Riwayat Percobaan Mengerjakan Kuis
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-center text-slate-600">
+                            <thead class="text-xs text-slate-500 bg-white/60 uppercase rounded-lg">
+                                <tr>
+                                    <th class="px-4 py-3 text-center">Nama Kuis</th>
+                                    <th class="px-4 py-3 text-center">Percobaan Ke-</th>
+                                    <th class="px-4 py-3 text-center">Tanggal Mengerjakan</th>
+                                    <th class="px-4 py-3 text-center">Status Penilaian</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentQuizHistoryBody" class="divide-y divide-slate-200/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="studentSubViewTools" class="space-y-6 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block mb-2">
+                    <button onclick="switchStudentSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card rounded-3xl p-6 shadow-lg border border-white/90 flex flex-col justify-between space-y-5">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/60">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md overflow-hidden shrink-0 border border-white bg-white">
+                                        <img src="asset/Scratch Logo.png" alt="Scratch Logo" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-display font-bold text-slate-800 text-xl">Scratch Programming</h3>
+                                            <span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Scratch</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600">Pemrograman Visual Koding untuk Anak</p>
+                                    </div>
+                                </div>
+                                <a href="https://scratch.mit.edu/projects/editor/" target="_blank" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5 shrink-0">
+                                    <span>Buka Editor</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            </div>
+                            <div class="space-y-3">
+                                <h4 class="font-display font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-list-ol text-amber-500"></i> Langkah Praktis Belajar Scratch:
+                                </h4>
+                                <ol class="space-y-2.5 text-xs text-slate-700">
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">1</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Buka Web Editor Scratch</b>
+                                            Klik tombol <i class="text-amber-600 font-semibold">"Buka Editor"</i> di atas untuk masuk langsung ke lembar kerja Scratch secara online.
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">2</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Pilih Karakter (Sprite) & Latar (Backdrop)</b>
+                                            Klik ikon Kucing di kanan bawah untuk menambah karakter baru, serta ikon gambar untuk mengganti panggung/latar belakang.
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">3</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Susun Blok Pemrograman</b>
+                                            Tarik blok warna kuning <i class="text-amber-600 font-semibold">"When Green Flag Clicked"</i> dari panel Events, lalu hubungkan blok gerakan (Motion) atau suara (Sound) di bawahnya.
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">4</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Uji Coba & Simpan Proyek</b>
+                                            Klik Bendera Hijau untuk menjalankan animasi/game buatanmu, lalu simpan file melalui menu <i class="text-amber-600 font-semibold">File &gt; Save to your computer</i>.
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 shadow-lg border border-white/90 flex flex-col justify-between space-y-5">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/60">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md overflow-hidden shrink-0 border border-white bg-white">
+                                        <img src="asset/Canva Logo.jpg" alt="Canva Logo" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-display font-bold text-slate-800 text-xl">Canva Design</h3>
+                                            <span class="bg-cyan-100 text-cyan-700 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Canva</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600">Desain Grafis & Presentasi Komputer</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.canva.com" target="_blank" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5 shrink-0">
+                                    <span>Buka Canva</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            </div>
+                            <div class="space-y-3">
+                                <h4 class="font-display font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-list-ol text-cyan-600"></i> Langkah Praktis Belajar Canva:
+                                </h4>
+                                <ol class="space-y-2.5 text-xs text-slate-700">
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-cyan-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">1</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Masuk ke Canva Studio</b>
+                                            Klik tombol <i class="text-cyan-600 font-semibold">"Buka Canva"</i> di atas untuk memulai sesi pembuatan karya grafis interaktif.
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-cyan-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">2</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Pilih Jenis Desain</b>
+                                            Pilih jenis lembar kerja seperti <i class="text-cyan-600 font-semibold">Presentasi, Poster, atau Infografis</i> sesuai petunjuk tugas dari Guru TIK.
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-cyan-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">3</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Edit Teks, Gambar & Elemen</b>
+                                            Gunakan bilah menu sebelah kiri untuk menyisipkan teks judul, stiker animasi, bentuk geometris, serta foto pendukung.
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-white/90 shadow-sm">
+                                        <span class="w-6 h-6 rounded-xl bg-cyan-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">4</span>
+                                        <div class="leading-relaxed">
+                                            <b class="text-slate-800 block mb-0.5">Unduh & Bagikan Hasil Karya</b>
+                                            Klik tombol <i class="text-cyan-600 font-semibold">Bagikan (Share) &gt; Unduh (Download)</i> lalu pilih format PDF Standard atau Gambar (PNG/JPG) untuk diserahkan ke Guru.
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="teacherDashboard" class="hidden space-y-8 max-w-7xl mx-auto">
+            <div id="teacherSubViewDashboard" class="space-y-8">
+                <div class="relative overflow-hidden rounded-[2.5rem] glass-card-hero p-6 sm:p-8 text-slate-800 shadow-xl border border-white/90">
+                    <div class="relative z-10 space-y-3">
+                        <div class="inline-flex items-center gap-2 bg-brand-50/90 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-brand-700 border border-brand-200/60 shadow-sm">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="tracking-wide">Konsol Pendidik TIK</span>
+                            <span class="text-slate-300">•</span>
+                            <span class="text-brand-600 font-bold">Kelas 5A-5D & 6A-6D</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-display font-bold tracking-tight text-slate-800 drop-shadow-sm">
+                            Portal Manajemen Guru TIK
+                        </h2>
+                        <p class="text-slate-600 text-xs sm:text-sm max-w-2xl leading-relaxed font-medium">
+                            Kelola presensi siswa harian, terbitkan modul pembelajaran, rancang kuis evaluasi interaktif, serta koreksi nilai siswa dengan cepat dalam satu panel.
+                        </p>
+                    </div>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-xl border border-white/90">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-200/80 mb-4">
+                        <h3 class="font-display font-bold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-purple-600"></i> Biodata & Profil Guru TIK
+                        </h3>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Status: Aktif</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Nama Lengkap Guru</span>
+                            <p id="tchBioName" class="font-bold text-slate-900 text-sm truncate">-</p>
+                        </div>
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Username</span>
+                            <p id="tchBioUsername" class="font-bold text-brand-600 text-sm truncate">-</p>
+                        </div>
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">NIP / Kode Guru</span>
+                            <p id="tchBioNip" class="font-bold text-purple-700 text-sm truncate">-</p>
+                        </div>
+                        <div class="p-3.5 bg-white/80 rounded-2xl border border-white/90 shadow-sm">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 block mb-1">Kelas Pengampu</span>
+                            <p class="font-bold text-slate-900 text-sm truncate">Kelas 5A-5D & 6A-6D</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="glass-card glass-card-hover p-5 rounded-3xl shadow-lg flex items-center gap-4 group border border-white/80">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-brand-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg group-hover:scale-110 transition duration-300">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-600">Guru Pengampu</span>
+                            <h4 id="statTeacherName" class="font-display font-bold text-slate-800 text-base truncate">Guru TIK</h4>
+                            <p class="text-[11px] text-emerald-700 font-bold flex items-center gap-1 mt-0.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Terverifikasi Aktif
+                            </p>
+                        </div>
+                    </div>
+                    <div class="glass-card glass-card-hover p-5 rounded-3xl shadow-lg flex items-center gap-4 group border border-white/80">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg group-hover:scale-110 transition duration-300">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-600">Total Siswa</span>
+                            <h4 id="statTotalStudents" class="font-display font-bold text-slate-900 text-xl">0 Siswa</h4>
+                            <p class="text-[11px] text-slate-600 font-semibold mt-0.5">Kelas 5A - 6D TIK</p>
+                        </div>
+                    </div>
+                    <div class="glass-card glass-card-hover p-5 rounded-3xl shadow-lg flex items-center gap-4 group border border-white/80">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg group-hover:scale-110 transition duration-300">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-600">Modul Terunggah</span>
+                            <h4 id="statTotalModules" class="font-display font-bold text-slate-900 text-xl">0 / 32</h4>
+                            <p class="text-[11px] text-amber-800 font-bold mt-0.5">Kelas 5 & 6 (16 Pertemuan)</p>
+                        </div>
+                    </div>
+                    <div class="glass-card glass-card-hover p-5 rounded-3xl shadow-lg flex items-center gap-4 group border border-white/80">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg group-hover:scale-110 transition duration-300">
+                            <i class="fa-solid fa-feather-pointed"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-600">Kuis Evaluasi</span>
+                            <h4 id="statTotalQuizzes" class="font-display font-bold text-slate-900 text-xl">0 Kuis</h4>
+                            <p class="text-[11px] text-purple-800 font-bold mt-0.5">PG & Essay Interaktif</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="glass-card p-4 sm:p-5 rounded-3xl shadow-md border border-white/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="font-display font-bold text-slate-900 text-xl flex items-center gap-2">
+                                <i class="fa-solid fa-shapes text-brand-600"></i> Modul Pengelolaan Utama
+                            </h3>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">Pilih menu di bawah ini untuk mengelola aktivitas pembelajaran TIK</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div onclick="switchTeacherSection('students')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-brand-600 transition">Kelola Akun Siswa</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Atur registrasi siswa baru, edit biodata kelas, reset kata sandi, serta pantau grafik progres membaca modul & kuis.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-brand-600 group-hover:underline">Buka Data Siswa</span>
+                                <span class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-brand-600 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                        <div onclick="switchTeacherSection('modules')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-file-circle-plus"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-emerald-700 transition">Kelola Modul TIK (5 & 6)</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Unggah file materi PDF, PPTX terpisah antara Kelas 5 (16 Pertemuan) dan Kelas 6 (16 Pertemuan).</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-emerald-700 group-hover:underline">Kelola Modul TIK</span>
+                                <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-emerald-600 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                        <div onclick="switchTeacherSection('attendance')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-clipboard-user"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-amber-700 transition">Daftar Hadir / Presensi</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Catat absensi harian siswa dengan Aksi Cepat (Set Hadir Semua / Pilih No Siswa), serta cetak rekapitulasi.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-amber-700 group-hover:underline">Isi Presensi Kelas</span>
+                                <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-amber-500 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                        <div onclick="switchTeacherSection('quizzes')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-file-pen"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-purple-700 transition">Pembuat Kuis TIK</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Buat kuis latihan interaktif pilihan ganda dan essay khusus untuk target kelas 5 maupun kelas 6.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-purple-700 group-hover:underline">Buat Kuis Baru</span>
+                                <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-purple-600 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                        <div onclick="switchTeacherSection('grading')" class="group relative glass-card glass-card-hover rounded-3xl p-6 shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between border border-white/90 overflow-hidden">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-rose-600 text-white flex items-center justify-center text-xl mb-4 shadow-md group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-square-poll-vertical"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-slate-900 text-lg mb-1 group-hover:text-rose-700 transition">Koreksi & Rekap Nilai</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">Periksa jawaban kuis siswa, berikan nilai tambahan kuis essay, serta cetak lembar rekapitulasi nilai.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between">
+                                <span class="text-xs font-bold text-rose-700 group-hover:underline">Koreksi Jawaban</span>
+                                <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center text-xs group-hover:translate-x-1 group-hover:bg-rose-600 group-hover:text-white transition shadow-sm"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="teacherSubViewStudents" class="space-y-4 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block">
+                    <button onclick="switchTeacherSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between md:items-center gap-4 border border-white/90">
+                    <div>
+                        <h3 class="font-display font-bold text-slate-900 text-2xl">Daftar Akun Siswa TIK</h3>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="teacherClassFilter" onchange="renderTeacherStudentList()" class="px-4 py-2.5 bg-white/90 border border-slate-200 rounded-2xl text-xs font-bold text-brand-700 shadow-sm">
+                            <option value="ALL">Semua Kelas (5A-6D)</option>
+                            <optgroup label="Kelas 5 SD">
+                                <option value="5A">Kelas 5A</option>
+                                <option value="5B">Kelas 5B</option>
+                                <option value="5C">Kelas 5C</option>
+                                <option value="5D">Kelas 5D</option>
+                            </optgroup>
+                            <optgroup label="Kelas 6 SD">
+                                <option value="6A">Kelas 6A</option>
+                                <option value="6B">Kelas 6B</option>
+                                <option value="6C">Kelas 6C</option>
+                                <option value="6D">Kelas 6D</option>
+                            </optgroup>
+                        </select>
+                        <button onclick="openAddStudentModal()" class="px-5 py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 text-white rounded-2xl text-xs font-bold shadow-lg hover:from-brand-700 hover:to-indigo-700 flex items-center gap-2 transition active:scale-95">
+                            <i class="fa-solid fa-plus"></i> Tambah Siswa Baru
+                        </button>
+                    </div>
+                </div>
+                <div class="teacher-student-table-shell">
+                    <div class="overflow-x-auto teacher-student-table-wrap">
+                        <table id="teacherStudentTable" class="w-full text-sm text-left text-slate-700">
+                            <thead class="text-xs uppercase bg-slate-900/90 backdrop-blur-md text-white font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Nama Siswa</th>
+                                    <th class="px-6 py-4">Username</th>
+                                    <th class="px-6 py-4">Kelas</th>
+                                    <th class="px-6 py-4 min-w-[150px]">Progres Membaca</th>
+                                    <th class="px-6 py-4 min-w-[150px]">Progres Kuis</th>
+                                    <th class="px-6 py-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherStudentTableBody" class="divide-y divide-slate-200/60 bg-white/40"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="teacherSubViewModules" class="space-y-4 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block">
+                    <button onclick="switchTeacherSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-white/90">
+                    <div>
+                        <h3 class="font-display font-bold text-slate-900 text-2xl">Kelola Modul Pembelajaran TIK (1-16)</h3>
+                        <p class="text-xs text-slate-600 font-medium mt-0.5">Pilih tingkat kelas di bawah ini untuk mengelola modul</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="flex items-center bg-slate-200/80 p-1 rounded-2xl">
+                            <button id="modGradeBtn5" onclick="setTeacherModuleGrade('5')" class="px-4 py-2 text-xs font-bold rounded-xl transition bg-white text-brand-600 shadow-sm">Kelas 5 SD</button>
+                            <button id="modGradeBtn6" onclick="setTeacherModuleGrade('6')" class="px-4 py-2 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-800">Kelas 6 SD</button>
+                        </div>
+                        <button onclick="openEditModuleModal(1)" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl text-xs font-bold shadow-lg hover:from-emerald-700 hover:to-teal-700 flex items-center gap-2 transition active:scale-95">
+                            <i class="fa-solid fa-upload"></i> Upload / Edit Modul
+                        </button>
+                    </div>
+                </div>
+                <div id="teacherModulesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            </div>
+            <div id="teacherSubViewAttendance" class="space-y-6 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block no-print">
+                    <button onclick="switchTeacherSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-xl space-y-6 border border-white/90">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-200/80 pb-5">
+                        <div>
+                            <h3 class="font-display font-bold text-slate-900 text-2xl flex items-center gap-2.5">
+                                <i class="fa-solid fa-clipboard-user text-brand-600"></i> Absensi Peserta Didik
+                            </h3>
+                            <p class="text-xs text-slate-600 font-medium mt-1">Daftar Hadir Bulanan & Rekapitulasi Tahunan Siswa TIK</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3 items-center">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Pilih Kelas</label>
+                                <select id="attClassSelect" onchange="loadAttendanceForm()" class="px-3.5 py-2 bg-white/90 border border-slate-200 rounded-xl text-xs font-bold text-brand-700 shadow-sm focus:ring-2 focus:ring-brand-500">
+                                    <optgroup label="Kelas 5 SD">
+                                        <option value="5A">Kelas 5A</option>
+                                        <option value="5B">Kelas 5B</option>
+                                        <option value="5C">Kelas 5C</option>
+                                        <option value="5D">Kelas 5D</option>
+                                    </optgroup>
+                                    <optgroup label="Kelas 6 SD">
+                                        <option value="6A">Kelas 6A</option>
+                                        <option value="6B">Kelas 6B</option>
+                                        <option value="6C">Kelas 6C</option>
+                                        <option value="6D">Kelas 6D</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Pilih Bulan</label>
+                                <select id="attMonthSelect" onchange="loadAttendanceForm()" class="px-3.5 py-2 bg-white/90 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 shadow-sm focus:ring-2 focus:ring-brand-500">
+                                    <option value="JULI">Juli</option>
+                                    <option value="AGUST" selected>Agustus</option>
+                                    <option value="SEPT">September</option>
+                                    <option value="OKT">Oktober</option>
+                                    <option value="NOV">November</option>
+                                    <option value="DES">Desember</option>
+                                    <option value="JAN">Januari</option>
+                                    <option value="FEB">Februari</option>
+                                    <option value="MAR">Maret</option>
+                                    <option value="APR">April</option>
+                                    <option value="MEI">Mei</option>
+                                    <option value="JUN">Juni</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Tanggal Aktif</label>
+                                <select id="attActiveDaySelect" onchange="changeActiveAbsenceDay(this.value)" class="px-3.5 py-2 bg-white/90 border border-slate-200 rounded-xl text-xs font-bold text-emerald-700 shadow-sm focus:ring-2 focus:ring-emerald-500">
+                                </select>
+                            </div>
+                            <div class="self-end">
+                                <button onclick="openAttendancePrintModal('month')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold no-print flex items-center gap-2 shadow transition active:scale-95" title="Cetak Rekap Presensi Siswa">
+                                    <i class="fa-solid fa-print"></i> Cetak Presensi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="quickAbsenceBox" class="p-4 bg-indigo-50/90 backdrop-blur-md rounded-2xl border border-indigo-200/80 space-y-3 no-print">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-2 text-xs font-bold text-indigo-950">
+                                <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs shadow-sm">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </span>
+                                <span>Pengisian Absensi Cepat Tanggal <span id="quickBoxDayLabel" class="font-extrabold underline">1</span> (<span id="quickBoxClassLabel" class="font-extrabold text-indigo-700">Kelas 5A</span>)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="applyAutoHadirAll()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5 active:scale-95">
+                                    <i class="fa-solid fa-user-check"></i> 1. Set Semua Siswa HADIR (H)
+                                </button>
+                                <button type="button" onclick="clearAbsenceActiveDay()" class="px-3 py-2 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-eraser"></i> Kosongkan Hari Ini
+                                </button>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5 pt-2 border-t border-indigo-200/60">
+                            <label class="block text-[11px] font-bold text-indigo-900" id="pickerGridTitle">2. Pilih Siswa Pengecualian (Sakit / Izin / Alpa):</label>
+                            <div id="studentPickerGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-2.5 bg-white/90 rounded-xl border border-indigo-200/60 text-xs">
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 pt-1">
+                            <span class="text-[11px] font-bold text-slate-600">Ubah Tercentang Menjadi:</span>
+                            <button type="button" onclick="applyExclusionToSelected('S')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow transition">Sakit (S)</button>
+                            <button type="button" onclick="applyExclusionToSelected('I')" class="px-3.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-bold shadow transition">Izin (I)</button>
+                            <button type="button" onclick="applyExclusionToSelected('A')" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow transition">Alpa (A)</button>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50/60 border border-indigo-200/80 p-3.5 rounded-2xl flex flex-wrap justify-between items-center gap-3 no-print">
+                        <div class="text-xs text-indigo-950 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+                            <span>Progress Tanggal <b id="activeDayProgressText">1</b> Bulan <b id="currentMonthProgressLabel">Agustus</b>:</span>
+                            <b id="completedAbsenceCount" class="text-indigo-800 bg-white px-2.5 py-0.5 rounded-lg border border-indigo-200 shadow-sm">0 / 0 Siswa</b>
+                        </div>
+                        <div class="text-xs text-slate-600 font-medium bg-white/80 px-3 py-1 rounded-xl border border-slate-200">
+                            Terakhir Diabsen: <span id="lastAbsenceDoneName" class="font-bold text-slate-800">-</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 no-print">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-display font-bold text-slate-800 text-base">Daftar Hadir Bulanan - <span id="currentMonthLabel" class="text-brand-600">Agustus</span></h4>
+                            <div class="flex items-center gap-2 text-[11px] font-semibold">
+                                <span class="attendance-legend attendance-legend-h px-2.5 py-1 rounded-lg font-bold border">H = Hadir</span>
+                                <span class="attendance-legend attendance-legend-s px-2.5 py-1 rounded-lg font-bold border">S = Sakit</span>
+                                <span class="attendance-legend attendance-legend-i px-2.5 py-1 rounded-lg font-bold border">I = Izin</span>
+                                <span class="attendance-legend attendance-legend-a px-2.5 py-1 rounded-lg font-bold border">A = Alpa</span>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto rounded bg-white shadow-sm attendance-table-scroll">
+                            <table class="w-full text-xs text-left border-collapse min-w-[1300px]" id="absensiMatrixTable">
+                                <thead>
+                                    <tr class="bg-slate-800 text-white font-bold text-center">
+                                        <th rowspan="2" class="p-2.5 w-[48px] min-w-[48px] max-w-[48px] sticky left-0 bg-slate-800 z-30 border-r border-slate-700">NO</th>
+                                        <th rowspan="2" class="p-2.5 w-[220px] min-w-[220px] max-w-[220px] text-left sticky left-[48px] bg-slate-800 z-30 border-r-2 border-slate-700 sticky-shadow">NAMA SISWA</th>
+                                        <th id="tanggalHeaderGroup" colspan="31" class="p-2 border-b border-slate-700 bg-slate-800 z-10">TANGGAL BULANAN</th>
+                                        <th rowspan="2" class="p-2 w-10 border-l border-slate-700 text-slate-200">H</th>
+                                        <th rowspan="2" class="p-2 w-10 text-slate-200">S</th>
+                                        <th rowspan="2" class="p-2 w-10 text-slate-200">I</th>
+                                        <th rowspan="2" class="p-2 w-10 text-slate-200">A</th>
+                                        <th rowspan="2" class="p-2 w-16 text-slate-200">% Kehadiran</th>
+                                    </tr>
+                                    <tr id="absensiDaysHeader" class="bg-slate-700 text-slate-200 text-[10px]">
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceListBody" class="divide-y divide-slate-200/80">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="space-y-2 pt-4 border-t border-slate-200 no-print">
+                        <h4 class="font-display font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-brand-600"></i> Rekapitulasi Absensi 1 Tahun Ajaran
+                        </h4>
+                        <div class="overflow-x-auto rounded bg-white shadow-sm attendance-table-scroll">
+                            <table id="annualAttendanceTable" class="w-full text-[11px] text-center border-collapse min-w-[1200px]">
+                                <thead>
+                                    <tr class="bg-slate-800 text-white font-bold">
+                                        <th rowspan="2" class="p-2 w-[48px] min-w-[48px] max-w-[48px] sticky left-0 bg-slate-800 z-30 border-r border-slate-700">NO</th>
+                                        <th rowspan="2" class="p-2 text-left w-[220px] min-w-[220px] max-w-[220px] sticky left-[48px] bg-slate-800 z-30 border-r-2 border-slate-700 sticky-shadow">NAMA SISWA</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">JULI</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">AGUST</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">SEPT</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">OKT</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">NOV</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">DES</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">JAN</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">FEB</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">MAR</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">APR</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">MEI</th>
+                                        <th colspan="4" class="p-1.5 border-r border-slate-700 bg-slate-700">JUN</th>
+                                        <th colspan="4" class="p-1.5 bg-slate-800 text-slate-200 border-l border-slate-700">TOTAL 1 TAHUN</th>
+                                    </tr>
+                                    <tr class="bg-slate-700 text-slate-200 text-[10px]">
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th>H</th><th>S</th><th>I</th><th>A</th>
+                                        <th class="bg-slate-800 text-slate-200">H</th>
+                                        <th class="bg-slate-800 text-slate-200">S</th>
+                                        <th class="bg-slate-800 text-slate-200">I</th>
+                                        <th class="bg-slate-800 text-slate-200">A</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rekapAttendanceBody" class="divide-y divide-slate-200">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="teacherSubViewQuizzes" class="space-y-4 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block">
+                    <button onclick="switchTeacherSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-xl flex justify-between items-center border border-white/90">
+                    <div>
+                        <h3 class="font-display font-bold text-slate-900 text-2xl">Pembuat Kuis TIK Interaktif</h3>
+                    </div>
+                    <button onclick="openCreateQuizModal()" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl text-xs font-bold shadow-lg hover:from-purple-700 hover:to-indigo-700 flex items-center gap-2 transition active:scale-95">
+                        <i class="fa-solid fa-plus"></i> Buat Kuis Baru
+                    </button>
+                </div>
+                <div id="teacherQuizListGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+            </div>
+            <div id="teacherSubViewGrading" class="space-y-4 hidden">
+                <div class="glass-card p-3 rounded-2xl shadow-sm inline-block">
+                    <button onclick="switchTeacherSection('dashboard')" class="text-xs font-bold text-brand-600 flex items-center gap-2 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-xl space-y-6 border border-white/90">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-200/80 pb-5">
+                        <div>
+                            <h3 class="font-display font-bold text-slate-900 text-2xl">Koreksi Jawaban & Rekap Nilai Kuis</h3>
+                        </div>
+                        <div class="flex flex-wrap items-end justify-end gap-3">
+                            <div class="flex flex-col gap-1 min-w-[145px]">
+                                <label for="rekapQuizSelect" class="px-1 text-[10px] font-extrabold uppercase tracking-wide text-slate-500">Pilih Kuis yang Dibuat</label>
+                                <p class="px-1 text-[10px] leading-relaxed text-slate-500">Dropdown ini untuk memilih kuis yang ingin dilihat hasil dan koreksinya.</p>
+                                <select id="rekapQuizSelect" title="Pilih kuis atau materi kuis yang dibuat guru" aria-label="Pilih kuis materi yang dibuat guru" onchange="renderTeacherGradingTable()" class="px-4 py-2.5 bg-white/90 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 shadow-sm"></select>
+                            </div>
+                            <div class="flex flex-col gap-1 min-w-[125px]">
+                                <label for="rekapClassSelect" class="px-1 text-[10px] font-extrabold uppercase tracking-wide text-slate-500">Filter Kelas</label>
+                                <select id="rekapClassSelect" onchange="renderTeacherGradingTable()" class="px-4 py-2.5 bg-white/90 border border-slate-200 rounded-2xl text-xs font-bold text-brand-700 shadow-sm">
+                                <option value="ALL">Semua Kelas</option>
+                                <optgroup label="Kelas 5 SD">
+                                    <option value="5A">Kelas 5A</option>
+                                    <option value="5B">Kelas 5B</option>
+                                    <option value="5C">Kelas 5C</option>
+                                    <option value="5D">Kelas 5D</option>
+                                </optgroup>
+                                <optgroup label="Kelas 6 SD">
+                                    <option value="6A">Kelas 6A</option>
+                                    <option value="6B">Kelas 6B</option>
+                                    <option value="6C">Kelas 6C</option>
+                                    <option value="6D">Kelas 6D</option>
+                                </optgroup>
+                                </select>
+                            </div>
+                            <button onclick="openGradingPrintModal()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-xs font-bold no-print flex items-center gap-2 shadow transition active:scale-95" title="Cetak Rekap Nilai Siswa">
+                                <i class="fa-solid fa-print"></i> Cetak Rekap
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto rounded bg-white shadow-sm no-print">
+                        <table class="w-full text-sm text-left text-slate-700">
+                            <thead class="text-xs uppercase bg-slate-800 text-white font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-5 py-4">Siswa</th>
+                                    <th class="px-5 py-4">Kelas</th>
+                                    <th class="px-5 py-4">Tanggal Kerjakan</th>
+                                    <th class="px-5 py-4">Nilai Akhir</th>
+                                    <th class="px-5 py-4">Status Penilaian</th>
+                                    <th class="px-5 py-4 text-right no-print">Detail & Koreksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradingTableBody" class="divide-y divide-slate-200/60 bg-white/40"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-white/40 backdrop-blur-md border-t border-white/60 mt-12 py-6 text-center text-xs text-slate-600 no-print">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-2 font-display font-semibold text-slate-700">
+                <img src="asset/EduTech Kids.png" alt="EduTech Kids Logo" class="w-5 h-5 object-contain">
+                <span class="text-xs">EduTech Kids eLearning TIK</span>
+                <span class="text-slate-300">•</span>
+                <span class="text-slate-500 text-xs ta-display">T.A 2026/2027</span>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600">
+                <span>&copy; 2026 EduTech Kids.</span>
+                <span class="text-slate-300 hidden sm:inline">•</span>
+                <span class="flex items-center gap-2 font-bold text-slate-700">
+                    <span>Created by</span>
+                    <span class="px-3 py-1 rounded-xl bg-brand-600 text-white font-extrabold text-xs shadow-md tracking-wide">
+                        Naufal Kurniawan
+                    </span>
+                </span>
+            </div>
+        </div>
+    </footer>
+    <div id="viewModuleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-white/60">
+            <div class="p-5 bg-brand-600 text-white flex justify-between items-center">
+                <div>
+                    <span id="viewModMeetingBadge" class="text-[10px] bg-white/20 font-bold px-2.5 py-0.5 rounded-md uppercase">Pertemuan 1</span>
+                    <h3 id="viewModTitle" class="font-display font-bold text-lg mt-1">Judul Modul</h3>
+                </div>
+                <button onclick="closeModal('viewModuleModal')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-4 bg-slate-100 border-b border-slate-200">
+                <p id="viewModDesc" class="text-xs text-slate-600 font-medium"></p>
+            </div>
+            <div class="flex-1 p-2 bg-slate-200/50 min-h-[350px]">
+                <iframe id="viewModIframe" class="w-full h-full min-h-[400px] rounded-xl border border-slate-300"></iframe>
+            </div>
+            <div class="p-4 bg-white border-t border-slate-200 flex flex-wrap justify-between items-center gap-2">
+                <button id="viewModMarkReadBtn" class="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-check"></i> Tandai Selesai Dibaca
+                </button>
+                <div class="flex items-center gap-2">
+                    <button id="viewModExternalBtn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Tab Baru
+                    </button>
+                    <button id="viewModDownloadBtn" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-download"></i> Unduh Modul
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="takeQuizModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-white/60">
+            <div class="p-5 bg-brand-600 text-white flex justify-between items-center">
+                <div>
+                    <h3 id="takeQuizTitle" class="font-display font-bold text-lg">Pengerjaan Kuis TIK</h3>
+                    <p id="takeQuizSubtitle" class="text-xs text-indigo-100">Jawablah pertanyaan di bawah ini!</p>
+                </div>
+                <button onclick="closeModal('takeQuizModal')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="takeQuizForm" onsubmit="submitStudentQuiz(event)" class="p-6 overflow-y-auto space-y-6 flex-1">
+                <input type="hidden" id="takeQuizId">
+                <div id="takeQuizQuestionsContainer" class="space-y-6"></div>
+                <div class="pt-4 border-t border-slate-200 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('takeQuizModal')" class="px-5 py-2.5 bg-slate-100 text-slate-600 text-sm font-bold rounded-xl">Batal</button>
+                    <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-md">
+                        <i class="fa-solid fa-paper-plane mr-1.5"></i> Kirim Jawaban
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="addStudentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-md w-full p-6 shadow-2xl border border-white/60">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="studentModalTitle" class="font-display font-bold text-slate-800 text-lg">Tambah Siswa Baru</h3>
+                <button onclick="closeModal('addStudentModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="addStudentForm" onsubmit="handleAddStudentSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editOriginalUsername" value="">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="addStdName" required autocomplete="off" class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm" placeholder="Contoh: Naufal Kurniawan Himawan">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Username</label>
+                    <input type="text" id="addStdUsername" required autocomplete="off" class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm" placeholder="naufal">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kelas</label>
+                    <select id="addStdClass" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm font-semibold">
+                        <optgroup label="Kelas 5 SD">
+                            <option value="5A">Kelas 5A</option>
+                            <option value="5B">Kelas 5B</option>
+                            <option value="5C">Kelas 5C</option>
+                            <option value="5D">Kelas 5D</option>
+                        </optgroup>
+                        <optgroup label="Kelas 6 SD">
+                            <option value="6A">Kelas 6A</option>
+                            <option value="6B">Kelas 6B</option>
+                            <option value="6C">Kelas 6C</option>
+                            <option value="6D">Kelas 6D</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="addStdPass" value="123456" required autocomplete="off" class="w-full pl-3.5 pr-10 py-2 bg-slate-50 border rounded-xl text-sm">
+                        <button type="button" onclick="togglePasswordVisibility('addStdPass', 'eyeIconAddStd')" class="absolute right-3 top-2 text-slate-400 hover:text-slate-600">
+                            <i id="eyeIconAddStd" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('addStudentModal')" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-xl">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white text-xs font-bold rounded-xl">Simpan Siswa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="moduleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-white/60">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-display font-bold text-slate-800 text-lg">Upload / Kelola Modul Pembelajaran</h3>
+                <button onclick="closeModal('moduleModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="saveModuleForm" onsubmit="handleSaveModule(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Tingkat Kelas</label>
+                        <select id="modGradeSelect" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm font-semibold text-brand-600">
+                            <option value="5">Kelas 5 SD</option>
+                            <option value="6">Kelas 6 SD</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Pertemuan Ke (1 - 16)</label>
+                        <select id="modMeetingNumber" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm"></select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Judul Modul Materi TIK</label>
+                    <input type="text" id="modTitle" required autocomplete="off" placeholder="Judul modul" class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Singkat Materi</label>
+                    <textarea id="modDescription" rows="2" required placeholder="Ringkasan materi..." class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-sm"></textarea>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                    <label class="block text-xs font-bold text-slate-700">Pilih File Modul (PDF, Docx, PPTX, dll)</label>
+                    <input type="file" id="modFileInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
+                    <p class="text-[11px] text-slate-400">Atau masukkan Link Modul jika sudah diunggah ke cloud:</p>
+                    <input type="text" id="modLink" autocomplete="off" placeholder="https://link-modul-kamu.com/file.pdf" class="w-full px-3.5 py-2 bg-white border rounded-xl text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('moduleModal')" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-xl">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white text-xs font-bold rounded-xl">Simpan Modul</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="createQuizModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-white/60">
+            <div class="p-5 bg-purple-600 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="font-display font-bold text-lg">Buat Kuis TIK Baru</h3>
+                    <p class="text-xs text-purple-100">Tambahkan soal Pilihan Ganda & Essay untuk siswa</p>
+                </div>
+                <button onclick="closeModal('createQuizModal')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="saveQuizForm" onsubmit="handleSaveQuiz(event)" class="p-6 overflow-y-auto space-y-5 flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Kuis</label>
+                        <input type="text" id="newQuizTitle" required autocomplete="off" placeholder="Contoh: Kuis Pertemuan 1 - Mengenal Komputer" class="w-full px-3.5 py-2 bg-slate-50 border rounded-xl text-xs font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Target Kelas</label>
+                        <select id="newQuizClass" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-xs font-bold text-brand-700">
+                            <option value="ALL">Semua Kelas (5A-6D)</option>
+                            <optgroup label="Kelas 5 SD">
+                                <option value="5A">Kelas 5A</option>
+                                <option value="5B">Kelas 5B</option>
+                                <option value="5C">Kelas 5C</option>
+                                <option value="5D">Kelas 5D</option>
+                            </optgroup>
+                            <optgroup label="Kelas 6 SD">
+                                <option value="6A">Kelas 6A</option>
+                                <option value="6B">Kelas 6B</option>
+                                <option value="6C">Kelas 6C</option>
+                                <option value="6D">Kelas 6D</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-200">
+                        <div><h4 class="font-bold text-slate-800 text-xs">Daftar Soal (<span id="builderQuestionCount">0</span> Soal)</h4></div>
+                        <button type="button" onclick="addQuestionBuilderField()" class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold rounded-xl flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Tambah Soal
+                        </button>
+                    </div>
+                    <div id="quizQuestionsBuilderList" class="space-y-4"></div>
+                </div>
+                <div class="pt-4 border-t border-slate-200 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('createQuizModal')" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-xl">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl shadow">Terbitkan Kuis</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="reviewGradeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-white/60">
+            <div class="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="font-display font-bold text-lg">Review & Koreksi Hasil Kuis</h3>
+                    <p class="text-xs text-blue-100">Periksa jawaban siswa dan berikan penilaian akhir</p>
+                </div>
+                <button onclick="closeModal('reviewGradeModal')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="reviewGradeContent" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
+        </div>
+    </div>
+    <div id="printAttendanceModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden">
+        <div id="printAttendanceModalContent" class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden border border-white/60">
+            <div class="p-4 sm:p-5 bg-gradient-to-r from-brand-600 to-indigo-700 text-white flex flex-wrap justify-between items-center gap-3 no-print">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-lg shadow-sm">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg">Cetak Rekap Presensi Siswa</h3>
+                        <p class="text-xs text-indigo-100">Pratinjau lembar presensi resmi (No, Nama, Hadir, Sakit, Izin, Alpa)</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="bg-slate-900/40 p-1 rounded-xl flex items-center text-xs">
+                        <button type="button" id="btnPrintModeMonth" onclick="switchAttendancePrintMode('month')" class="px-3 py-1.5 rounded-lg font-bold transition bg-white text-brand-700 shadow-sm">
+                            <i class="fa-solid fa-calendar-day mr-1"></i> Rekap Bulan
+                        </button>
+                        <button type="button" id="btnPrintModeYear" onclick="switchAttendancePrintMode('year')" class="px-3 py-1.5 rounded-lg font-bold transition text-indigo-200 hover:text-white">
+                            <i class="fa-solid fa-calendar-days mr-1"></i> 1 Tahun Ajaran
+                        </button>
+                    </div>
+                    <button type="button" onclick="executeAttendancePrint()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition active:scale-95">
+                        <i class="fa-solid fa-print"></i> Cetak Dokumen
+                    </button>
+                    <button type="button" onclick="closeAttendancePrintModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-100/70">
+                <div id="attendancePrintSheet" class="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 text-slate-800 font-sans max-w-3xl mx-auto my-1">
+                </div>
+            </div>
+            <div class="p-3 bg-white border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 no-print">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-brand-600"></i> Hanya lembar rekap (No, Nama, H, S, I, A) yang akan tercetak di kertas/PDF.</span>
+                <button type="button" onclick="closeAttendancePrintModal()" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="printGradingModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden">
+        <div id="printGradingModalContent" class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-4xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden border border-white/60">
+            <div class="p-4 sm:p-5 bg-gradient-to-r from-brand-600 to-indigo-700 text-white flex flex-wrap justify-between items-center gap-3 no-print">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-lg shadow-sm">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg">Cetak Rekap Nilai Kuis</h3>
+                        <p class="text-xs text-indigo-100">Pratinjau lembar rekap (No, Siswa, Kelas, Tanggal, Nilai Akhir)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="executeGradingPrint()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition active:scale-95">
+                        <i class="fa-solid fa-print"></i> Cetak Dokumen
+                    </button>
+                    <button type="button" onclick="closeGradingPrintModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-100/70">
+                <div id="gradingPrintSheet" class="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 text-slate-800 font-sans max-w-3xl mx-auto my-1">
+                </div>
+            </div>
+            <div class="p-3 bg-white border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 no-print">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-brand-600"></i> Hanya lembar rekap nilai siswa yang akan dicetak di kertas/PDF.</span>
+                <button type="button" onclick="closeGradingPrintModal()" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="gas-sync.js?v=28"></script>
+</body>
+</html>

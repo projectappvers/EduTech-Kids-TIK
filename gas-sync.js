@@ -1,5 +1,5 @@
 const EDU_TECH_GAS_CONFIG = {
-    webAppUrl: 'https://script.google.com/macros/s/AKfycbz_U3r7qgQ4oRP1f2CNQC0mq_wunPduA_XtWSgwsEuKrdVjWY5hSG3kZdcRHhKoVdsS/exec',
+    webAppUrl: 'https://script.google.com/macros/s/AKfycbwgpVqjsgaqgFhT6ujCj20F0gobVXajQhVOBI5bCqUIuPi-y9skfIzH1yB86gzRAoOt/exec',
     pollIntervalMs: 1000,
     requestTimeoutMs: 15000
 };

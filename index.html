@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Deteksi mode admin sebelum halaman utama sempat tampil di iframe /admin/. -->
+    <script>
+        (function () {
+            try {
+                if (new URLSearchParams(window.location.search).get('admin') === '1') {
+                    document.documentElement.classList.add('edutech-admin-route');
+                }
+            } catch (error) { /* Mode normal tetap berjalan jika URLSearchParams tidak tersedia. */ }
+        })();
+    </script>
+    <style>
+        /* Cegah kilatan dashboard utama ketika panel admin di-refresh. */
+        html.edutech-admin-route body > header,
+        html.edutech-admin-route body > main,
+        html.edutech-admin-route body > footer {
+            display: none !important;
+        }
+        html.edutech-admin-route body > #adminPortal {
+            display: block !important;
+        }
+    </style>
     <title>EduTech Kids - Platform eLearning TIK SD</title>
     <link rel="icon" type="image/png" href="asset/EduTech Kids.png">
     <script src="https://cdn.tailwindcss.com"></script>

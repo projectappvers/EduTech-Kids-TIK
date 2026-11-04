@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f7ff">
+  <meta name="robots" content="noindex, nofollow">
+  <title>EduTech Kids - Sedang Diperbaiki</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      min-height: 100vh; display: grid; place-items: center; padding: 28px;
+      color: #0f172a; background: radial-gradient(circle at 8% 8%, #d9dcff 0, transparent 34%),
+      radial-gradient(circle at 92% 90%, #d9f0ff 0, transparent 34%), #f4f7ff;
+    }
+    .card {
+      width: min(1040px, 100%); min-height: 420px; padding: clamp(26px, 4vw, 48px);
+      display: grid; grid-template-columns: minmax(210px, .85fr) minmax(0, 1.75fr);
+      grid-template-areas: "brand title" "art message" "art eta" "art divider" "art help" "art button" "art status";
+      align-items: center; column-gap: clamp(28px, 4vw, 58px); row-gap: 0;
+      border: 1px solid rgba(255,255,255,.96); border-radius: 30px;
+      background: rgba(255,255,255,.92); box-shadow: 0 28px 90px rgba(30,41,59,.16);
+    }
+    .brand { grid-area: brand; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .logo { width: 68px; height: 68px; object-fit: contain; border-radius: 18px; background: white; box-shadow: 0 8px 24px rgba(79,70,229,.12); }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid #c7d2fe; border-radius: 999px; color: #4338ca; background: #eef2ff; font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,.13); animation: pulse 1.8s ease-in-out infinite; }
+    .art { grid-area: art; position: relative; display: grid; place-items: center; justify-self: center; width: min(100%,250px); min-height: 250px; }
+    .orbit { position: absolute; border: 1px dashed #a5b4fc; border-radius: 50%; }
+    .orbit.one { inset: 10px 0; transform: rotate(25deg); }
+    .orbit.two { inset: 0 12px; transform: rotate(-28deg); }
+    .tool-icon { z-index: 1; display: grid; place-items: center; width: 112px; height: 112px; border-radius: 32px; color: white; background: linear-gradient(135deg,#818cf8,#4f46e5); box-shadow: 0 15px 30px rgba(79,70,229,.27); transform: rotate(-7deg); }
+    .tool-icon svg { width: 52px; height: 52px; }
+    .spark { position: absolute; color: #f59e0b; font-size: 24px; }
+    .spark.one { top: 13%; right: 5%; }
+    .spark.two { bottom: 13%; left: 5%; color: #38bdf8; }
+    h1 { grid-area: title; align-self: end; margin: 0 0 12px; color: #1e1b4b; font-size: clamp(26px,2.6vw,36px); font-weight: 800; line-height: 1.13; letter-spacing: -.04em; }
+    .message { grid-area: message; align-self: start; max-width: 560px; margin: 0; color: #475569; font-size: 14px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .eta { grid-area: eta; display: none; align-items: flex-start; gap: 9px; width: 100%; max-width: 560px; margin-top: 16px; padding: 11px 14px; border: 1px solid #bfdbfe; border-radius: 14px; color: #1d4ed8; background: #eff6ff; font-size: 12px; line-height: 1.6; }
+    .eta.show { display: flex; }
+    .divider { grid-area: divider; width: 74px; height: 3px; margin: 18px 0 13px; border-radius: 99px; background: linear-gradient(90deg,#818cf8,#38bdf8); }
+    .help { grid-area: help; max-width: 560px; margin: 0; color: #64748b; font-size: 12px; line-height: 1.7; }
+    .button { grid-area: button; justify-self: start; display: inline-flex; align-items: center; gap: 9px; min-height: 44px; margin-top: 18px; padding: 0 20px; border: 0; border-radius: 14px; color: white; background: #4f46e5; box-shadow: 0 8px 20px rgba(79,70,229,.2); font-size: 12px; font-weight: 800; text-decoration: none; cursor: pointer; }
+    .button:hover { background: #4338ca; transform: translateY(-1px); }
+    .status { grid-area: status; min-height: 16px; margin: 10px 0 0; color: #94a3b8; font-size: 10px; line-height: 1.5; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+    @media (max-width: 760px) {
+      body { padding: 14px 12px; }
+      .card { display: flex; flex-direction: column; align-items: center; width: min(520px,100%); min-height: 0; margin: auto; padding: 26px 20px; border-radius: 24px; text-align: center; }
+      .brand { gap: 10px; }
+      .logo { width: 60px; height: 60px; }
+      .pill { font-size: 9px; letter-spacing: .08em; }
+      .art { width: 112px; min-height: 104px; height: 104px; margin: 19px auto 9px; }
+      .tool-icon { width: 70px; height: 70px; border-radius: 23px; }
+      .tool-icon svg { width: 34px; height: 34px; }
+      .orbit.one { inset: 4px 0; }
+      .orbit.two { inset: 0 9px; }
+      .spark { font-size: 19px; }
+      .spark.one { top: 0; right: 4px; }
+      .spark.two { bottom: 0; left: 3px; }
+      h1 { align-self: auto; max-width: 100%; margin: 7px auto 11px; font-size: clamp(24px,6.5vw,31px); }
+      .message { max-width: 100%; margin: 0 auto; font-size: 13px; line-height: 1.75; }
+      .eta { justify-content: center; width: 100%; margin: 17px auto 0; padding: 10px 12px; font-size: 11px; }
+      .divider { align-self: center; width: 70px; margin: 21px auto 14px; }
+      .help { max-width: 100%; margin: 0 auto; font-size: 11px; }
+      .button { align-self: center; margin-top: 19px; }
+      .status { align-self: center; margin-top: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .button { transition: none; } }
+  </style>
+</head>
+<body>
+  <main class="card" role="status" aria-live="polite">
+    <div class="brand">
+      <img class="logo" src="https://projectappvers.github.io/EduTech-Kids-TIK/asset/EduTech%20Kids.png" alt="Logo EduTech Kids" onerror="this.style.display='none'">
+      <span class="pill"><span class="dot"></span> SYSTEM MAINTENANCE</span>
+    </div>
+    <div class="art" aria-hidden="true">
+      <span class="orbit one"></span><span class="orbit two"></span>
+      <span class="spark one">✦</span><span class="spark two">✧</span>
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.7 6.3a5 5 0 0 0-6.6 6.6L3 18a2.1 2.1 0 0 0 3 3l5.1-5.1a5 5 0 0 0 6.6-6.6l-3 3-3-3 3-3Z"/>
+          <path d="m16 3 5 5M18.5 1.5l4 4"/>
+        </svg>
+      </div>
+    </div>
+    <h1>EduTech Kids sedang diperbaiki</h1>
+    <p id="maintenanceMessage" class="message">Sistem sedang diperbarui. Silakan kembali beberapa saat lagi.</p>
+    <div id="maintenanceEta" class="eta"><span>◷</span><strong></strong></div>
+    <div class="divider"></div>
+    <p class="help">Kami sedang melakukan pemeliharaan agar kegiatan belajar dapat berjalan kembali dengan normal. Data akun dan hasil belajar tetap tersimpan.</p>
+    <a class="button" href="https://projectappvers.github.io/EduTech-Kids-TIK/">↻　Periksa Kembali</a>
+    <p id="maintenanceStatus" class="status">Halaman utama sedang tidak tersedia. Silakan periksa kembali beberapa saat lagi.</p>
+  </main>
+  <script>
+    (function () {
+      'use strict';
+      const HOME_URL = 'https://projectappvers.github.io/EduTech-Kids-TIK/';
+      const GAS_URL = 'https://script.google.com/macros/s/AKfycbz_U3r7qgQ4oRP1f2CNQC0mq_wunPduA_XtWSgwsEuKrdVjWY5hSG3kZdcRHhKoVdsS/exec';
+      const STORAGE_KEY = 'eduTech_maintenance_v1';
+      const messageEl = document.getElementById('maintenanceMessage');
+      const etaWrap = document.getElementById('maintenanceEta');
+      const statusEl = document.getElementById('maintenanceStatus');
+
+      function applyConfig(config, source) {
+        if (!config || typeof config !== 'object') return;
+        const message = String(config.message || '').trim();
+        if (message) messageEl.textContent = message;
+        const eta = String(config.eta || '').trim();
+        if (eta) {
+          etaWrap.querySelector('strong').textContent = 'Perkiraan selesai: ' + eta;
+          etaWrap.classList.add('show');
+        } else {
+          etaWrap.classList.remove('show');
+        }
+        if (source) statusEl.textContent = 'Informasi pemeliharaan dimuat dari ' + source + '.';
+      }
+
+      try {
+        const localConfig = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (localConfig && localConfig.enabled) applyConfig(localConfig, 'perangkat ini');
+      } catch (_) {}
+
+      function loadServerConfig() {
+        return new Promise((resolve, reject) => {
+          const callbackName = '__eduTech404Maintenance_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+          const script = document.createElement('script');
+          let finished = false;
+          const timer = setTimeout(() => finish(new Error('Timeout')), 8000);
+          function finish(error, data) {
+            if (finished) return;
+            finished = true;
+            clearTimeout(timer);
+            script.remove();
+            try { delete window[callbackName]; } catch (_) { window[callbackName] = undefined; }
+            if (error) reject(error); else resolve(data);
+          }
+          window[callbackName] = data => finish(null, data);
+          script.onerror = () => finish(new Error('Gagal memuat status maintenance'));
+          const url = new URL(GAS_URL);
+          url.searchParams.set('action', 'sync');
+          url.searchParams.set('since', '0');
+          url.searchParams.set('full', '1');
+          url.searchParams.set('callback', callbackName);
+          url.searchParams.set('_', String(Date.now()));
+          script.src = url.toString();
+          document.head.appendChild(script);
+        });
+      }
+
+      loadServerConfig().then(response => {
+        if (!response || !response.ok) throw new Error('Respons server tidak valid');
+        const record = (Array.isArray(response.records) ? response.records : [])
+          .find(item => item && item.key === STORAGE_KEY && !item.deleted);
+        if (record && record.value) {
+          const config = JSON.parse(record.value);
+          if (config && config.enabled) applyConfig(config, 'server');
+        }
+      }).catch(() => {
+        statusEl.textContent = 'Belum dapat memeriksa server. Halaman akan tetap menampilkan informasi pemeliharaan.';
+      });
+
+      document.querySelector('.button').addEventListener('click', function (event) {
+        event.preventDefault();
+        const target = HOME_URL + '?recheck=' + Date.now();
+        window.location.href = target;
+      });
+    })();
+  </script>
+</body>
+</html>
